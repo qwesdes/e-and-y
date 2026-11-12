@@ -287,7 +287,6 @@ function calView() {
     h += `<div class='cell ${(r.date || an.length) ? 'has' : ''} ${ds === td ? 'today' : ''}' data-d='${ds}'><span class='num'>${d}</span><div class='moods'>${bu ? `<img src='${esc(bu)}' alt=''>` : ''}${be ? `<img src='${esc(be)}' alt=''>` : ''}</div>${r.notes && r.notes.length ? `<span class='nt'>✎</span>` : ''}${an.length ? `<span class='an' style='background:${esc(an[0].color || '#f3b7b0')}'></span>` : ''}${r.period ? `<span class='pd'></span>` : ''}${ds === td ? dk('clover', 'clv') : ''}</div>`;
   }
   h += `</div><p class='empty' style='margin-top:12px'>左边是兔子的心情，右边是熊的。底下的红点是那几天，右上角的小圆点是纪念日。</p>`;
-  h += `<div class='sea'>${dk('jelly', '')}${dk('seal', '')}${dk('octopus', '')}</div>`;
   $.innerHTML = h; bindTabs();
   document.getElementById('pm').onclick = () => { ym = m === 0 ? [y - 1, 11] : [y, m - 1]; calView(); };
   document.getElementById('nm').onclick = () => { ym = m === 11 ? [y + 1, 0] : [y, m + 1]; calView(); };
