@@ -109,7 +109,7 @@ function detail(id) {
   const x = cache.find(i => i.id === id); if (!x) return home();
   let big, sub;
   if (x.kind === 'together') { big = since(x.date) + ' 天'; sub = '从 ' + showDate(x.date) + ' 开始'; }
-  else if (x.kind === 'yearly') { const n = nextIn(x.date); big = n === 0 ? '今天' : n + ' 天'; sub = n === 0 ? showDate(x.date) : '离下一次还有'; }
+  else if (x.kind === 'yearly') { const n = nextIn(x.date); const s = since(x.date); if (s != null && s > 0) { big = s + ' 天'; sub = '已经过去 · 离下一次' + (n === 0 ? '就是今天' : '还有 ' + n + ' 天'); } else { big = n === 0 ? '今天' : n + ' 天'; sub = n === 0 ? showDate(x.date) : '离下一次还有'; } }
   else { const s = since(x.date); big = s === 0 ? '今天' : Math.abs(s) + ' 天'; sub = s > 0 ? '已经过去' : s < 0 ? '还有' : showDate(x.date); }
   let h = '<div class="bar"><button class="ghost" id="back">‹ 回去</button><button class="ghost" id="edit">改一改</button></div>';
   h += '<div class="hero" style="background:linear-gradient(135deg,' + esc(x.color || '#f3b7b0') + '55,var(--hero2))"><div class="s">' + esc(x.title) + '</div><div class="big">' + esc(big) + '</div><div class="s">' + esc(sub) + '</div>' + (x.photo ? '<img src="' + esc(x.photo) + '" alt="">' : '') + '</div>';
