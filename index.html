@@ -311,7 +311,7 @@ function dayView(ds) {
 }
 
 function styleView() {
-  if (!draft) draft = { sticker: set.sticker, moods: set.moods.map(o => ({ name: o.name, url: o.url })), deco: Object.assign({}, set.deco) };
+  if (!draft) draft = { sticker: set.sticker, moods: set.moods.map(o => ({ name: o.name, url: o.url, bunnyUrl: o.bunnyUrl || '' })), deco: Object.assign({}, set.deco) };
   let h = '<h1>E&amp;Y</h1>' + tabs();
   h += `<div class='box' style='margin-top:12px'><label>大框右上角的贴纸（图片链接）</label><input id='st' value='${esc(draft.sticker)}'><img src='${esc(draft.sticker)}' alt='' style='width:72px;display:block'></div>`;
   h += `<div class='box'><label>心情小图标</label>` + draft.moods.map((o, i) => `<div class='mrow'><img src='${esc(o.url)}' alt=''><input data-i='${i}' data-k='name' value='${esc(o.name)}' placeholder='名字' style='flex:0 0 80px'><input data-i='${i}' data-k='url' value='${esc(o.url)}' placeholder='链接'><button class='plain' data-del='${i}'>删</button></div>`).join('') + `<div class='btns'><button class='plain' id='addm'>加一个心情</button></div></div>`;
