@@ -305,7 +305,7 @@ function dayView(ds) {
   h += `<label>${dk('bearHat', 'inl')}熊今天</label><div class='pick'>${be ? `<span class='on'><img src='${esc(be)}' alt=''></span>` : `<span>还没贴</span>`}</div>`;
   h += `<label class='tog'><input type='checkbox' id='pd' ${r.period ? 'checked' : ''}>${dk('catCry', 'inl')}这天来了，点一颗小红点</label><input id='pn' placeholder='第几天、疼不疼' value='${esc(r.periodNote || '')}'></div>`;
   (r.notes || []).forEach((nt, i) => { const rot = ((i * 7 + p[2]) % 5 - 2) * 0.7; h += `<div class='slipn' style='transform:rotate(${rot}deg)'><div class='who'>${nt.who === 'bear' ? '🐻 熊' : '🐰 兔子'}</div>${esc(nt.text)}</div>`; });
-  h += `<div class='box'><label>贴一张小纸条</label><textarea id='nt' placeholder='今天想记住的一件小事'></textarea><button id='sv'>存好</button></div>`;
+  h += `<div class='box'><label>贴一张小纸条</label><textarea id='nt' placeholder='今天想记住的一件小事'></textarea><div class='btns'><button id='sv'>存好</button>${dk('proud', 'side')}</div></div>`;
   $.innerHTML = h;
   document.getElementById('back').onclick = calView;
   $.querySelectorAll('#pb span').forEach(s => s.onclick = () => { bm = s.dataset.m; $.querySelectorAll('#pb span').forEach(o => o.classList.toggle('on', o === s)); });
