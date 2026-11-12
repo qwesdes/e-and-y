@@ -217,7 +217,6 @@ function home() {
   if (!rest.length) h += `<p class='empty'>${dk('ghost', 'ghost-e')}还没有别的日子</p>`;
   rest.forEach(x => { h += `<div class='row' data-id='${esc(x.id)}'>${is129(x) ? dk('apple', 'ap') : ''}<div class='dot' style='background:${esc(x.color || '#f3b7b0')}'></div><div class='t'><div class='n'>${esc(x.title)}</div><div class='d'>${esc(showDate(x.date))}</div></div><div class='c'>${esc(label(x))}</div></div>`; });
   h += `<div class='btns'>${dk('toast', 'side')}<button id='add'>添一个日子</button>${dk('naruto', 'side')}</div>`;
-  h += `<div class='sea'>${dk('jelly', '')}${dk('seal', '')}${dk('octopus', '')}</div>`;
   $.innerHTML = h; bindTabs();
   $.querySelectorAll('[data-id]').forEach(el => el.onclick = () => detail(el.dataset.id));
   document.getElementById('add').onclick = () => form(null);
