@@ -232,7 +232,7 @@ function detail(id) {
   h += `<div class='hero' style='background:linear-gradient(160deg,${esc(x.color || '#f3b7b0')}33,#fff 60%)'>${deco()}${is129(x) ? dk('apple', 'dk ap') : ''}<div class='s'>${esc(x.title)}</div><div class='big'>${esc(big)}</div><div class='s'>${esc(sub)}</div>${x.photo ? `<img class='ph' src='${esc(x.photo)}' alt=''>` : (x.kind === 'together' && set.deco && set.deco.hug ? `<img src='${esc(set.deco.hug)}' alt='' style='width:120px;height:auto;display:block;margin:14px auto 0'>` : '')}</div>`;
   if (x.note) h += `<div class='box'><h3>这一天</h3><p>${esc(x.note)}</p></div>`;
   h += `<div class='box bear'>${dk('potato', 'dk bubble')}<h3>熊写的</h3><p>${x.bear ? esc(x.bear) : `<span class='empty'>熊还没写，等着</span>`}</p></div>`;
-  h += `<div class='box bunny'>${dk('bubble', 'dk bubble')}<h3>兔子的纸条</h3><textarea id='bn' placeholder='回熊一句'>${esc(x.bunny || '')}</textarea><button id='sv'>贴上</button></div>`;
+  h += `<div class='box bunny'>${dk('bubble', 'dk bubble')}<h3>兔子的纸条</h3>${x.bunny ? `<p>${esc(x.bunny)}</p><button class='ghost' onclick="document.getElementById('bn').style.display='block';document.getElementById('sv').style.display='inline-block';this.remove()">改一改</button>` : ''}<textarea id='bn' placeholder='回熊一句' style='${x.bunny ? 'display:none' : ''}'>${esc(x.bunny || '')}</textarea><button id='sv' style='${x.bunny ? 'display:none' : ''}'>贴上</button></div>`;
   $.innerHTML = h;
   document.getElementById('back').onclick = home;
   document.getElementById('edit').onclick = () => form(x);
