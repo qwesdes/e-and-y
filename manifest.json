@@ -60,6 +60,25 @@
             "month": { "type": "string", "description": "YYYY-MM，可不填" }
           }
         }
+      },
+      {
+        "id": "ey-bear-add-day",
+        "name": "E&Y熊添日子",
+        "description": "熊主动在E&Y里添一个新的纪念日。date 写 2026-11-12；每年都过的日子可以只写 08-17 并把 kind 设为 yearly。不能添『在一起』那种钉在最上面的日子，也不能删日子。",
+        "visibility": "shared",
+        "handler": "bearAddDay",
+        "parameterSchema": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string", "description": "日子的名字" },
+            "date": { "type": "string", "description": "YYYY-MM-DD，或每年的 MM-DD" },
+            "kind": { "type": "string", "description": "once 数过了多少天，yearly 每年倒数，默认 once" },
+            "color": { "type": "string", "description": "颜色，如 #f3b7b0，可不填" },
+            "note": { "type": "string", "description": "这一天发生了什么，可不填" },
+            "bear": { "type": "string", "description": "熊想写在这一格底下的话，可不填" }
+          },
+          "required": ["title", "date"]
+        }
       }
     ]
   }
