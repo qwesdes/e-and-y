@@ -311,7 +311,7 @@ function dayView(ds) {
   document.getElementById('sv').onclick = async () => {
     const t = document.getElementById('nt').value.trim();
     const patch = { bunnyMood: bm, period: document.getElementById('pd').checked, periodNote: document.getElementById('pn').value.trim() };
-    if (t) patch.notes = (r.notes || []).concat([{ who: 'bunny', text: t, at: new Date().toISOString() }]);
+    if (t) { const fresh = (await list(C)).find(x => x.date === ds); patch.notes = ((fresh && fresh.notes) || []).concat([{ who: 'bunny', text: t, at: new Date().toISOString() }]); }
     await saveDay(ds, patch); await refresh(); A.ui.toast('贴好了'); dayView(ds);
   };
 }
