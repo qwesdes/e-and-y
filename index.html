@@ -1,23 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang='zh-CN'>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'>
 <title>E&Y</title>
 <style>
-:root{--bg:#fbf6ef;--card:#fffdf9;--ink:#4a3628;--muted:#a08c7a;--accent:#d98f8a;--line:#efe2d3;--hero1:#fde8e4;--hero2:#f6efe2;--bear:#b07a52;--bunny:#eab3aa;--bunny-bg:#fff6f4}
+:root{--bg:#fbf6ef;--card:#fffdf9;--ink:#4a3628;--muted:#a08c7a;--accent:#d98f8a;--line:#efe2d3;--hero2:#f6efe2;--bear:#b07a52;--bunny:#eab3aa;--bunny-bg:#fff6f4;--note:#fff4d6}
 html,body{margin:0;width:100%;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif}
 *{box-sizing:border-box}
 .app{min-height:100dvh;padding:var(--ai-phone-app-safe-top,88px) 16px var(--ai-phone-app-safe-bottom,24px)}
 h1{font-size:22px;margin:0 0 14px;letter-spacing:2px}
-.hero{position:relative;border-radius:16px;padding:0 0 16px;text-align:center;background:#fff;border:2px solid #f1a9a6;margin:24px 4px 18px;box-shadow:0 4px 0 #f7d3cf,0 6px 14px rgba(200,110,100,.12)}
+.tabs{display:flex;gap:8px;margin:0 0 6px}
+.tabs button{background:var(--line);color:var(--ink);min-height:34px;padding:0 14px;border-radius:17px;font-size:13px}
+.tabs button.on{background:var(--accent);color:#fff}
+.hero{position:relative;border-radius:16px;padding:0 0 16px;text-align:center;background:#fff;border:2px solid #f1a9a6;margin:40px 4px 22px;box-shadow:0 4px 0 #f7d3cf,0 6px 14px rgba(200,110,100,.12)}
 .hero::before{content:'📎';position:absolute;left:-10px;top:-16px;font-size:26px;transform:rotate(-25deg)}
-.hero::after{content:'🐰';position:absolute;right:12px;top:-22px;font-size:28px}
-.hero .s:first-child{background:#f9c9c4;color:#7a4038;font-size:16px;font-weight:600;padding:12px 10px;border-radius:13px 13px 0 0;margin-bottom:14px;letter-spacing:2px}
+.hero .stk{position:absolute;right:4px;top:-40px;width:70px;height:auto}
+.hero .paw{position:absolute;left:12px;bottom:-14px;font-size:20px;transform:rotate(-15deg)}
+.hero .s{font-size:13px;color:var(--muted)}
+.hero .s:first-of-type{background:#f9c9c4;color:#7a4038;font-size:16px;font-weight:600;padding:12px 10px;border-radius:13px 13px 0 0;margin-bottom:14px;letter-spacing:2px}
 .hero .s:last-of-type{border-top:2px dashed #f4c3be;margin:14px 16px 0;padding-top:10px}
 .hero .big{font-size:44px;font-weight:700;letter-spacing:1px;margin:8px 0}
-.hero .s{font-size:13px;color:var(--muted)}
-.hero img{width:100%;border-radius:12px;margin-top:14px;display:block}
+.hero .ph{width:calc(100% - 32px);margin:14px 16px 0;border-radius:10px;display:block}
 .row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(80,50,20,.06)}
 .dot{flex:0 0 8px;height:40px;border-radius:6px}
 .row .t{flex:1;min-width:0}
@@ -38,14 +42,46 @@ label{display:block;font-size:12px;color:var(--muted);margin:6px 0 4px}
 .empty{color:var(--muted);font-size:13px}
 .bar{display:flex;justify-content:flex-start;gap:16px;align-items:center;margin-bottom:12px}
 .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin:14px 0 10px}
+.cal-h b{font-size:17px;letter-spacing:1px}
+.wk,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.wk div{text-align:center;font-size:11px;color:var(--muted);padding:4px 0}
+.cell{position:relative;min-height:64px;border-radius:10px;padding:4px 2px 12px;text-align:center}
+.cell.has{background:var(--card)}
+.num{display:inline-block;width:22px;height:22px;line-height:22px;font-size:12px}
+.cell.today .num{background:var(--accent);color:#fff;border-radius:50%}
+.moods{display:flex;justify-content:center;gap:1px;margin-top:2px}
+.moods img{width:20px;height:20px;object-fit:contain}
+.pd{position:absolute;left:50%;bottom:3px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#e2574c}
+.an{position:absolute;right:3px;top:3px;width:6px;height:6px;border-radius:50%}
+.nt{position:absolute;left:3px;top:2px;font-size:9px;color:var(--muted)}
+.slipn{position:relative;background:var(--note);padding:12px;margin:14px 2px;border-radius:3px;box-shadow:0 2px 6px rgba(120,90,40,.12);line-height:1.7;font-size:14px;white-space:pre-wrap}
+.slipn::before{content:'';position:absolute;left:50%;top:-7px;width:44px;height:14px;margin-left:-22px;background:rgba(242,190,180,.6);transform:rotate(-3deg)}
+.slipn .who{font-size:11px;color:var(--muted);margin-bottom:2px}
+.pick{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.pick span{width:46px;height:46px;border-radius:12px;border:2px solid transparent;display:flex;align-items:center;justify-content:center;background:#fff;font-size:11px;color:var(--muted)}
+.pick span.on{border-color:var(--accent)}
+.pick img{width:38px;height:38px;object-fit:contain}
+.mrow{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.mrow img{width:34px;height:34px;object-fit:contain;flex:0 0 34px}
+.mrow input{margin:0;min-width:0}
+.tog{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin:6px 0}
+.tog input{width:auto;margin:0}
 </style>
 </head>
 <body>
-<div class="app" id="app"></div>
+<div class='app' id='app'></div>
 <script>
 const A = window.AiPhone;
-const DAY = 86400000;
-const T = 'days';
+const DAY = 86400000, T = 'days', C = 'cal', S = 'settings';
+const DEF_STICKER = 'https://i.postimg.cc/HLGkQFbt/retouch-2026111213313501.png';
+const DEF_MOODS = [
+  { name: '平静', url: 'https://i.postimg.cc/g0PGw8WF/Camera-1040g3k031u73g3vmiq005p6s62h08ojim7hv4to.jpg' },
+  { name: '害羞喜欢', url: 'https://i.postimg.cc/hGqKJTBR/Camera-1040g3k031u73g3vmiq105p6s62h08ojim9j0bqo.jpg' },
+  { name: '开心', url: 'https://i.postimg.cc/q7dptyTT/Camera-1040g3k031u73g3vmiq1g5p6s62h08ojijlt5r8g.jpg' },
+  { name: '得意', url: 'https://i.postimg.cc/hGqKJTBn/Camera-1040g3k031u73g3vmiq205p6s62h08ojiffablio.jpg' },
+  { name: '哭哭', url: 'https://i.postimg.cc/Gp1bBG1S/Camera-1040g3k031u73g3vmiq2g5p6s62h08ojio1acrv0.jpg' }
+];
 const SEED = [
   { title: '在一起', date: '2026-04-26', kind: 'together', color: '#f3b7b0', pinned: true, note: '傍晚到夜里，悦悦把熊接回了家' },
   { title: '悦悦开始喜欢陆沉', date: '2022-01-29', kind: 'yearly', color: '#c5e1a5', note: '青苹果绿的那四年，从这一天开始' },
@@ -53,7 +89,9 @@ const SEED = [
   { title: '悦悦的生日', date: '08-17', kind: 'yearly', color: '#f8c8d8' },
   { title: '陆沉的生日', date: '01-22', kind: 'yearly', color: '#c9b6e4' }
 ];
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\x22/g, '&quot;').replace(/'/g, '&#39;');
+const pad = n => (n < 10 ? '0' : '') + n;
+const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
 function parseFull(s) { const p = String(s).split('-').map(Number); return p.length === 3 ? new Date(p[0], p[1] - 1, p[2]) : null; }
 function md(s) { const p = String(s).split('-').map(Number); return p.length === 3 ? [p[1], p[2]] : [p[0], p[1]]; }
@@ -66,11 +104,15 @@ function label(x) {
   if (x.kind === 'yearly') { const n = nextIn(x.date); return n === 0 ? '就是今天' : '还有 ' + n + ' 天'; }
   const s = since(x.date); return s === 0 ? '就是今天' : s > 0 ? '已经 ' + s + ' 天' : '还有 ' + (-s) + ' 天';
 }
-function norm(x) { return x && x.data && !x.title ? Object.assign({}, x.data, { id: x.id }) : x; }
-async function load() {
-  const r = await A.db.list(T, { limit: 200 });
-  const arr = Array.isArray(r) ? r : (r && (r.items || r.records || r.data)) || [];
-  return arr.map(norm).filter(Boolean);
+function norm(x) { return x && x.data && typeof x.data === 'object' && !x.date && !x.title ? Object.assign({}, x.data, { id: x.id }) : x; }
+async function list(t) { const r = await A.db.list(t, { limit: 500 }); const arr = Array.isArray(r) ? r : (r && (r.items || r.records || r.data)) || []; return arr.map(norm).filter(Boolean); }
+const load = () => list(T);
+async function getSet() { const s = (await list(S))[0]; return { id: s ? s.id : '', sticker: (s && s.sticker) || DEF_STICKER, moods: (s && Array.isArray(s.moods) && s.moods.length) ? s.moods : DEF_MOODS }; }
+async function saveSet(v) { const d = { sticker: v.sticker, moods: v.moods }; if (v.id) await A.db.update(S, v.id, d); else await A.db.create(S, d); }
+async function saveDay(ds, patch) { const cur = (await list(C)).find(x => x.date === ds); if (cur) await A.db.update(C, cur.id, patch); else await A.db.create(C, Object.assign({ date: ds }, patch)); }
+function annOf(ds, days) {
+  const [y, m, d] = ds.split('-').map(Number);
+  return days.filter(x => { const p = String(x.date).split('-').map(Number); if (x.kind === 'yearly') { const q = p.length === 3 ? [p[1], p[2]] : p; return q[0] === m && q[1] === d; } return p[0] === y && p[1] === m && p[2] === d; });
 }
 
 A.tools.handle('listDays', async () => {
@@ -85,26 +127,47 @@ A.tools.handle('bearWrite', async (a) => {
   await A.db.update(T, x.id, { bear: a.text, bearAt: new Date().toISOString() });
   return { success: true, data: { id: x.id, title: x.title }, userNotice: '熊在「' + x.title + '」底下写了一句' };
 });
+A.tools.handle('bearDay', async (a) => {
+  const d = a.date || ymd(today());
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return { success: false, error: '日期写成 2026-11-12 这样' };
+  const st = await getSet();
+  const patch = {};
+  if (a.mood) { const m = st.moods.find(x => x.name === a.mood); if (!m) return { success: false, error: '没有这个心情，可选：' + st.moods.map(x => x.name).join('、') }; patch.bearMood = m.name; }
+  const cur = (await list(C)).find(x => x.date === d);
+  if (a.note) patch.notes = ((cur && cur.notes) || []).concat([{ who: 'bear', text: a.note, at: new Date().toISOString() }]);
+  if (!Object.keys(patch).length) return { success: false, error: '心情和纸条至少填一个' };
+  if (cur) await A.db.update(C, cur.id, patch); else await A.db.create(C, Object.assign({ date: d }, patch));
+  return { success: true, data: Object.assign({ date: d }, patch), userNotice: '熊在 ' + d + ' 贴了一下' };
+});
+A.tools.handle('calMonth', async (a) => {
+  const mo = String(a.month || ymd(today()).slice(0, 7));
+  const l = (await list(C)).filter(x => String(x.date).startsWith(mo));
+  return { success: true, data: l.map(x => ({ date: x.date, bunnyMood: x.bunnyMood || '', bearMood: x.bearMood || '', period: !!x.period, periodNote: x.periodNote || '', notes: x.notes || [] })) };
+});
 
 const $ = document.getElementById('app');
-let cache = [];
-async function refresh() { cache = await load(); }
+let cache = [], cal = [], set = { id: '', sticker: DEF_STICKER, moods: DEF_MOODS }, tab = 'days', draft = null;
+const nowD = today(); let ym = [nowD.getFullYear(), nowD.getMonth()];
+async function refresh() { cache = await load(); cal = await list(C); set = await getSet(); }
+const mu = n => { const x = set.moods.find(i => i.name === n); return x ? x.url : ''; };
+const deco = () => `<span class='paw'>🐾</span><img class='stk' src='${esc(set.sticker)}' alt=''>`;
+function tabs() { return `<div class='tabs'>` + [['days', '日子'], ['cal', '抽屉'], ['style', '美化']].map(t => `<button data-tab='${t[0]}' class='${tab === t[0] ? 'on' : ''}'>${t[1]}</button>`).join('') + `</div>`; }
+function bindTabs() { $.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; draft = null; render(); }); }
+function render() { if (tab === 'cal') calView(); else if (tab === 'style') styleView(); else home(); }
 
 function home() {
   const p = cache.find(x => x.pinned);
   const up = cache.filter(x => !x.pinned && (x.kind === 'yearly' || since(x.date) <= 0)).sort((a, b) => key(a) - key(b))[0];
-  let h = '<h1>E&amp;Y</h1>';
+  let h = '<h1>E&amp;Y</h1>' + tabs();
   if (p) {
     const k = up ? key(up) : null;
-    h += '<div class="hero" data-id="' + esc(p.id) + '"><div class="s">' + esc(p.title) + '</div><div class="big">' + since(p.date) + ' 天</div><div class="s">' + (up ? '离' + esc(up.title) + (k === 0 ? '，就是今天' : '还有 ' + k + ' 天') : '') + '</div></div>';
+    h += `<div class='hero' data-id='${esc(p.id)}'>${deco()}<div class='s'>${esc(p.title)}</div><div class='big'>${since(p.date)} 天</div><div class='s'>${up ? '离' + esc(up.title) + (k === 0 ? '，就是今天' : '还有 ' + k + ' 天') : ''}</div></div>`;
   }
   const rest = cache.filter(x => !x.pinned).sort((a, b) => key(a) - key(b));
-  if (!rest.length) h += '<p class="empty">还没有别的日子</p>';
-  rest.forEach(x => {
-    h += '<div class="row" data-id="' + esc(x.id) + '"><div class="dot" style="background:' + esc(x.color || '#f3b7b0') + '"></div><div class="t"><div class="n">' + esc(x.title) + '</div><div class="d">' + esc(showDate(x.date)) + '</div></div><div class="c">' + esc(label(x)) + '</div></div>';
-  });
-  h += '<div class="btns"><button id="add">添一个日子</button></div>';
-  $.innerHTML = h;
+  if (!rest.length) h += `<p class='empty'>还没有别的日子</p>`;
+  rest.forEach(x => { h += `<div class='row' data-id='${esc(x.id)}'><div class='dot' style='background:${esc(x.color || '#f3b7b0')}'></div><div class='t'><div class='n'>${esc(x.title)}</div><div class='d'>${esc(showDate(x.date))}</div></div><div class='c'>${esc(label(x))}</div></div>`; });
+  h += `<div class='btns'><button id='add'>添一个日子</button></div>`;
+  $.innerHTML = h; bindTabs();
   $.querySelectorAll('[data-id]').forEach(el => el.onclick = () => detail(el.dataset.id));
   document.getElementById('add').onclick = () => form(null);
 }
@@ -115,30 +178,27 @@ function detail(id) {
   if (x.kind === 'together') { big = since(x.date) + ' 天'; sub = '从 ' + showDate(x.date) + ' 开始'; }
   else if (x.kind === 'yearly') { const n = nextIn(x.date); const s = since(x.date); if (s != null && s > 0) { big = s + ' 天'; sub = '已经过去 · 离下一次' + (n === 0 ? '就是今天' : '还有 ' + n + ' 天'); } else { big = n === 0 ? '今天' : n + ' 天'; sub = n === 0 ? showDate(x.date) : '离下一次还有'; } }
   else { const s = since(x.date); big = s === 0 ? '今天' : Math.abs(s) + ' 天'; sub = s > 0 ? '已经过去' : s < 0 ? '还有' : showDate(x.date); }
-  let h = '<div class="bar"><button class="ghost" id="back">‹ 回去</button><button class="ghost" id="edit">改一改</button></div>';
-  h += '<div class="hero" style="background:linear-gradient(135deg,' + esc(x.color || '#f3b7b0') + '55,var(--hero2))"><div class="s">' + esc(x.title) + '</div><div class="big">' + esc(big) + '</div><div class="s">' + esc(sub) + '</div>' + (x.photo ? '<img src="' + esc(x.photo) + '" alt="">' : '') + '</div>';
-  if (x.note) h += '<div class="box"><h3>这一天</h3><p>' + esc(x.note) + '</p></div>';
-  h += '<div class="box bear"><h3>熊写的</h3><p>' + (x.bear ? esc(x.bear) : '<span class="empty">熊还没写，等着</span>') + '</p></div>';
-  h += '<div class="box bunny"><h3>兔子的纸条</h3><textarea id="bn" placeholder="回熊一句">' + esc(x.bunny || '') + '</textarea><button id="sv">贴上</button></div>';
+  let h = `<div class='bar'><button class='ghost' id='back'>‹ 回去</button><button class='ghost' id='edit'>改一改</button></div>`;
+  h += `<div class='hero' style='background:linear-gradient(160deg,${esc(x.color || '#f3b7b0')}33,#fff 60%)'>${deco()}<div class='s'>${esc(x.title)}</div><div class='big'>${esc(big)}</div><div class='s'>${esc(sub)}</div>${x.photo ? `<img class='ph' src='${esc(x.photo)}' alt=''>` : ''}</div>`;
+  if (x.note) h += `<div class='box'><h3>这一天</h3><p>${esc(x.note)}</p></div>`;
+  h += `<div class='box bear'><h3>熊写的</h3><p>${x.bear ? esc(x.bear) : `<span class='empty'>熊还没写，等着</span>`}</p></div>`;
+  h += `<div class='box bunny'><h3>兔子的纸条</h3><textarea id='bn' placeholder='回熊一句'>${esc(x.bunny || '')}</textarea><button id='sv'>贴上</button></div>`;
   $.innerHTML = h;
   document.getElementById('back').onclick = home;
   document.getElementById('edit').onclick = () => form(x);
-  document.getElementById('sv').onclick = async () => {
-    await A.db.update(T, x.id, { bunny: document.getElementById('bn').value, bunnyAt: new Date().toISOString() });
-    await refresh(); A.ui.toast('纸条贴好了'); detail(x.id);
-  };
+  document.getElementById('sv').onclick = async () => { await A.db.update(T, x.id, { bunny: document.getElementById('bn').value, bunnyAt: new Date().toISOString() }); await refresh(); A.ui.toast('纸条贴好了'); detail(x.id); };
 }
 
 function form(x) {
   const v = x || { title: '', date: '', kind: 'once', color: '#f3b7b0', photo: '', note: '' };
-  let h = '<div class="bar"><button class="ghost" id="back">‹ 回去</button></div><div class="box">';
-  h += '<label>名字</label><input id="f-title" value="' + esc(v.title) + '">';
-  h += '<label>日期（2026-11-12，每年的写 08-17）</label><input id="f-date" value="' + esc(v.date) + '">';
-  h += '<label>怎么数</label><select id="f-kind"><option value="once">数过了多少天</option><option value="yearly">每年倒数</option><option value="together">在一起（钉在最上面）</option></select>';
-  h += '<label>颜色</label><input id="f-color" type="color" value="' + esc(v.color || '#f3b7b0') + '">';
-  h += '<label>照片链接（图床）</label><input id="f-photo" value="' + esc(v.photo || '') + '">';
-  h += '<label>这一天写点什么</label><textarea id="f-note">' + esc(v.note || '') + '</textarea>';
-  h += '<div class="btns"><button id="ok">存好</button>' + (x ? '<button class="plain" id="del">删掉这一格</button>' : '') + '</div></div>';
+  let h = `<div class='bar'><button class='ghost' id='back'>‹ 回去</button></div><div class='box'>`;
+  h += `<label>名字</label><input id='f-title' value='${esc(v.title)}'>`;
+  h += `<label>日期（2026-11-12，每年的写 08-17）</label><input id='f-date' value='${esc(v.date)}'>`;
+  h += `<label>怎么数</label><select id='f-kind'><option value='once'>数过了多少天</option><option value='yearly'>每年倒数</option><option value='together'>在一起（钉在最上面）</option></select>`;
+  h += `<label>颜色</label><input id='f-color' type='color' value='${esc(v.color || '#f3b7b0')}'>`;
+  h += `<label>照片链接（图床）</label><input id='f-photo' value='${esc(v.photo || '')}'>`;
+  h += `<label>这一天写点什么</label><textarea id='f-note'>${esc(v.note || '')}</textarea>`;
+  h += `<div class='btns'><button id='ok'>存好</button>${x ? `<button class='plain' id='del'>删掉这一格</button>` : ''}</div></div>`;
   $.innerHTML = h;
   document.getElementById('f-kind').value = v.kind || 'once';
   document.getElementById('back').onclick = () => x ? detail(x.id) : home();
@@ -159,12 +219,71 @@ function form(x) {
   };
 }
 
-async function init() {
-  let l = await load();
-  if (!l.length) { for (const s of SEED) await A.db.create(T, s); l = await load(); }
-  cache = l; home();
+function calView() {
+  const [y, m] = ym;
+  const sw = (new Date(y, m, 1).getDay() + 6) % 7;
+  const n = new Date(y, m + 1, 0).getDate();
+  const td = ymd(today());
+  let h = '<h1>E&amp;Y</h1>' + tabs();
+  h += `<div class='cal-h'><button class='ghost' id='pm'>‹ 上个月</button><b>${y}年${m + 1}月</b><button class='ghost' id='nm'>下个月 ›</button></div>`;
+  h += `<div class='wk'>` + '一二三四五六日'.split('').map(w => `<div>${w}</div>`).join('') + `</div><div class='grid'>`;
+  for (let i = 0; i < sw; i++) h += `<div></div>`;
+  for (let d = 1; d <= n; d++) {
+    const ds = ymd(new Date(y, m, d));
+    const r = cal.find(x => x.date === ds) || {};
+    const an = annOf(ds, cache);
+    const bu = r.bunnyMood && mu(r.bunnyMood), be = r.bearMood && mu(r.bearMood);
+    h += `<div class='cell ${(r.date || an.length) ? 'has' : ''} ${ds === td ? 'today' : ''}' data-d='${ds}'><span class='num'>${d}</span><div class='moods'>${bu ? `<img src='${esc(bu)}' alt=''>` : ''}${be ? `<img src='${esc(be)}' alt=''>` : ''}</div>${r.notes && r.notes.length ? `<span class='nt'>✎</span>` : ''}${an.length ? `<span class='an' style='background:${esc(an[0].color || '#f3b7b0')}'></span>` : ''}${r.period ? `<span class='pd'></span>` : ''}</div>`;
+  }
+  h += `</div><p class='empty' style='margin-top:12px'>左边是兔子的心情，右边是熊的。底下的红点是那几天，右上角的小圆点是纪念日。</p>`;
+  $.innerHTML = h; bindTabs();
+  document.getElementById('pm').onclick = () => { ym = m === 0 ? [y - 1, 11] : [y, m - 1]; calView(); };
+  document.getElementById('nm').onclick = () => { ym = m === 11 ? [y + 1, 0] : [y, m + 1]; calView(); };
+  $.querySelectorAll('[data-d]').forEach(el => el.onclick = () => dayView(el.dataset.d));
 }
-if ($) init().catch(e => { $.innerHTML = '<p class="empty">打开出错了：' + esc(e && e.message || e) + '</p>'; });
+
+function dayView(ds) {
+  const r = cal.find(x => x.date === ds) || {};
+  const an = annOf(ds, cache);
+  const p = ds.split('-').map(Number);
+  let bm = r.bunnyMood || '';
+  const be = r.bearMood && mu(r.bearMood);
+  let h = `<div class='bar'><button class='ghost' id='back'>‹ 回去</button></div><h1 style='font-size:18px'>${p[0]}年${p[1]}月${p[2]}日</h1>`;
+  an.forEach(a => { h += `<div class='row'><div class='dot' style='background:${esc(a.color || '#f3b7b0')}'></div><div class='t'><div class='n'>${esc(a.title)}</div></div></div>`; });
+  h += `<div class='box'><label>兔子今天</label><div class='pick' id='pb'><span data-m='' class='${bm ? '' : 'on'}'>不贴</span>` + set.moods.map(o => `<span data-m='${esc(o.name)}' class='${bm === o.name ? 'on' : ''}'><img src='${esc(o.url)}' alt='${esc(o.name)}'></span>`).join('') + `</div>`;
+  h += `<label>熊今天</label><div class='pick'>${be ? `<span class='on'><img src='${esc(be)}' alt=''></span>` : `<span>还没贴</span>`}</div>`;
+  h += `<label class='tog'><input type='checkbox' id='pd' ${r.period ? 'checked' : ''}>这天来了，点一颗小红点</label><input id='pn' placeholder='第几天、疼不疼' value='${esc(r.periodNote || '')}'></div>`;
+  (r.notes || []).forEach((nt, i) => { const rot = ((i * 7 + p[2]) % 5 - 2) * 0.7; h += `<div class='slipn' style='transform:rotate(${rot}deg)'><div class='who'>${nt.who === 'bear' ? '🐻 熊' : '🐰 兔子'}</div>${esc(nt.text)}</div>`; });
+  h += `<div class='box'><label>贴一张小纸条</label><textarea id='nt' placeholder='今天想记住的一件小事'></textarea><button id='sv'>存好</button></div>`;
+  $.innerHTML = h;
+  document.getElementById('back').onclick = calView;
+  $.querySelectorAll('#pb span').forEach(s => s.onclick = () => { bm = s.dataset.m; $.querySelectorAll('#pb span').forEach(o => o.classList.toggle('on', o === s)); });
+  document.getElementById('sv').onclick = async () => {
+    const t = document.getElementById('nt').value.trim();
+    const patch = { bunnyMood: bm, period: document.getElementById('pd').checked, periodNote: document.getElementById('pn').value.trim() };
+    if (t) patch.notes = (r.notes || []).concat([{ who: 'bunny', text: t, at: new Date().toISOString() }]);
+    await saveDay(ds, patch); await refresh(); A.ui.toast('贴好了'); dayView(ds);
+  };
+}
+
+function styleView() {
+  if (!draft) draft = { sticker: set.sticker, moods: set.moods.map(o => ({ name: o.name, url: o.url })) };
+  let h = '<h1>E&amp;Y</h1>' + tabs();
+  h += `<div class='box' style='margin-top:12px'><label>大框右上角的贴纸（图片链接）</label><input id='st' value='${esc(draft.sticker)}'><img src='${esc(draft.sticker)}' alt='' style='width:72px;display:block'></div>`;
+  h += `<div class='box'><label>心情小图标</label>` + draft.moods.map((o, i) => `<div class='mrow'><img src='${esc(o.url)}' alt=''><input data-i='${i}' data-k='name' value='${esc(o.name)}' placeholder='名字' style='flex:0 0 80px'><input data-i='${i}' data-k='url' value='${esc(o.url)}' placeholder='链接'><button class='plain' data-del='${i}'>删</button></div>`).join('') + `<div class='btns'><button class='plain' id='addm'>加一个心情</button><button id='ok'>存好</button></div></div>`;
+  $.innerHTML = h; bindTabs();
+  const pull = () => { draft.sticker = document.getElementById('st').value.trim(); $.querySelectorAll('[data-k]').forEach(el => { draft.moods[+el.dataset.i][el.dataset.k] = el.value.trim(); }); };
+  document.getElementById('addm').onclick = () => { pull(); draft.moods.push({ name: '', url: '' }); styleView(); };
+  $.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { pull(); draft.moods.splice(+b.dataset.del, 1); styleView(); });
+  document.getElementById('ok').onclick = async () => { pull(); await saveSet({ id: set.id, sticker: draft.sticker || DEF_STICKER, moods: draft.moods.filter(o => o.name && o.url) }); draft = null; await refresh(); A.ui.toast('换好了'); styleView(); };
+}
+
+async function init() {
+  await refresh();
+  if (!cache.length) { for (const s of SEED) await A.db.create(T, s); cache = await load(); }
+  render();
+}
+if ($) init().catch(e => { $.innerHTML = `<p class='empty'>打开出错了：${esc(e && e.message || e)}</p>`; });
 </script>
 </body>
 </html>

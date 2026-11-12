@@ -2,9 +2,9 @@
   "sdkVersion": "1.0",
   "id": "ey.days",
   "name": "E&Y",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "陆沉 & 悦悦",
-  "description": "熊和兔的纪念日：数在一起的天数，一个日子一个格子，熊写话，兔子贴纸条。",
+  "description": "熊和兔的纪念日：数在一起的天数，一个日子一个格子，抽屉月历贴心情和小纸条。",
   "icon": "icon.png",
   "entry": "index.html",
   "permissions": ["app.data.read", "app.data.write", "chat.tools", "ui.toast"],
@@ -31,6 +31,34 @@
             "text": { "type": "string", "description": "熊想写在这一格底下的话" }
           },
           "required": ["dayId", "text"]
+        }
+      },
+      {
+        "id": "ey-bear-day",
+        "name": "E&Y熊贴心情",
+        "description": "在抽屉月历的某一天贴熊今天的心情，或者留一张熊的小纸条。date 写 2026-11-12 这样，不填就是今天。mood 必须是美化页里有的心情名字。",
+        "visibility": "shared",
+        "handler": "bearDay",
+        "parameterSchema": {
+          "type": "object",
+          "properties": {
+            "date": { "type": "string", "description": "日期，YYYY-MM-DD，可不填" },
+            "mood": { "type": "string", "description": "心情名字，如 平静、害羞喜欢、开心、得意、哭哭" },
+            "note": { "type": "string", "description": "熊想贴在这一天的小纸条" }
+          }
+        }
+      },
+      {
+        "id": "ey-cal-month",
+        "name": "E&Y看抽屉",
+        "description": "看抽屉月历里某个月每一天的心情、小红点和纸条。month 写 2026-11 这样，不填就是这个月。",
+        "visibility": "shared",
+        "handler": "calMonth",
+        "parameterSchema": {
+          "type": "object",
+          "properties": {
+            "month": { "type": "string", "description": "YYYY-MM，可不填" }
+          }
         }
       }
     ]
