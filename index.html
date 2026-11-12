@@ -172,7 +172,7 @@ A.tools.handle('bearDay', async (a) => {
   const patch = {};
   if (a.mood) { const m = st.moods.find(x => x.name === a.mood); if (!m) return { success: false, error: '没有这个心情，可选：' + st.moods.map(x => x.name).join('、') }; patch.bearMood = m.name; }
   const cur = (await list(C)).find(x => x.date === d);
-  if (a.note) patch.notes = ((cur && cur.notes) || []).concat([{ who: 'bear', text: a.note, at: new Date().toISOString() }]);
+  if (a.note) { patch.notes = ((cur && cur.notes) || []).concat([{ who: 'bear', text: a.note, at: new Date().toISOString() }]); patch.bearUnread = true; }
   if (!Object.keys(patch).length) return { success: false, error: '心情和纸条至少填一个' };
   if (cur) await A.db.update(C, cur.id, patch); else await A.db.create(C, Object.assign({ date: d }, patch));
   return { success: true, data: Object.assign({ date: d }, patch), userNotice: '熊在 ' + d + ' 贴了一下' };
