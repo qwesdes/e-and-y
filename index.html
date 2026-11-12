@@ -302,7 +302,7 @@ function dayView(ds) {
   let h = `<div class='bar'><button class='ghost' id='back'>‹ 回去</button></div><h1 style='font-size:18px'>${p[0]}年${p[1]}月${p[2]}日${dk('memo', 'memo')}</h1>`;
   an.forEach(a => { h += `<div class='row'><div class='dot' style='background:${esc(a.color || '#f3b7b0')}'></div><div class='t'><div class='n'>${esc(a.title)}</div></div></div>`; });
   h += `<div class='box'><label>${dk('bunnyHat', 'inl')}兔子今天</label><div class='pick' id='pb'><span data-m='' class='${bm ? '' : 'on'}'>不贴</span>` + set.moods.map(o => `<span data-m='${esc(o.name)}' class='${bm === o.name ? 'on' : ''}'><img src='${esc(o.bunnyUrl || o.url)}' alt='${esc(o.name)}'></span>`).join('') + `</div>`;
-  h += `<label>熊今天</label><div class='pick'>${be ? `<span class='on'><img src='${esc(be)}' alt=''></span>` : `<span>还没贴</span>`}</div>`;
+  h += `<label>${dk('bearHat', 'inl')}熊今天</label><div class='pick'>${be ? `<span class='on'><img src='${esc(be)}' alt=''></span>` : `<span>还没贴</span>`}</div>`;
   h += `<label class='tog'><input type='checkbox' id='pd' ${r.period ? 'checked' : ''}>这天来了，点一颗小红点</label><input id='pn' placeholder='第几天、疼不疼' value='${esc(r.periodNote || '')}'></div>`;
   (r.notes || []).forEach((nt, i) => { const rot = ((i * 7 + p[2]) % 5 - 2) * 0.7; h += `<div class='slipn' style='transform:rotate(${rot}deg)'><div class='who'>${nt.who === 'bear' ? '🐻 熊' : '🐰 兔子'}</div>${esc(nt.text)}</div>`; });
   h += `<div class='box'><label>贴一张小纸条</label><textarea id='nt' placeholder='今天想记住的一件小事'></textarea><button id='sv'>存好</button></div>`;
