@@ -294,6 +294,7 @@ function calView() {
 
 function dayView(ds) {
   const r = cal.find(x => x.date === ds) || {};
+  if (r.bearUnread && r.id) A.db.update(C, r.id, { bearUnread: false }).then(() => { r.bearUnread = false; }).catch(() => {});
   const an = annOf(ds, cache);
   const p = ds.split('-').map(Number);
   let bm = r.bunnyMood || '';
