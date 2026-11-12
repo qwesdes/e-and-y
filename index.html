@@ -275,7 +275,7 @@ function calView() {
     const ds = ymd(new Date(y, m, d));
     const r = cal.find(x => x.date === ds) || {};
     const an = annOf(ds, cache);
-    const bu = r.bunnyMood && mu(r.bunnyMood), be = r.bearMood && mu(r.bearMood);
+    const bu = r.bunnyMood && mub(r.bunnyMood), be = r.bearMood && mu(r.bearMood);
     h += `<div class='cell ${(r.date || an.length) ? 'has' : ''} ${ds === td ? 'today' : ''}' data-d='${ds}'><span class='num'>${d}</span><div class='moods'>${bu ? `<img src='${esc(bu)}' alt=''>` : ''}${be ? `<img src='${esc(be)}' alt=''>` : ''}</div>${r.notes && r.notes.length ? `<span class='nt'>✎</span>` : ''}${an.length ? `<span class='an' style='background:${esc(an[0].color || '#f3b7b0')}'></span>` : ''}${r.period ? `<span class='pd'></span>` : ''}${ds === td ? dk('clover', 'clv') : ''}</div>`;
   }
   h += `</div><p class='empty' style='margin-top:12px'>左边是兔子的心情，右边是熊的。底下的红点是那几天，右上角的小圆点是纪念日。</p>`;
