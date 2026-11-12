@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>E&Y</title>
+<style>
+:root{--bg:#fbf6ef;--card:#fffdf9;--ink:#4a3628;--muted:#a08c7a;--accent:#d98f8a;--line:#efe2d3;--hero1:#fde8e4;--hero2:#f6efe2;--bear:#b07a52;--bunny:#eab3aa;--bunny-bg:#fff6f4}
+html,body{margin:0;width:100%;min-height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif}
+*{box-sizing:border-box}
+.app{min-height:100dvh;padding:var(--ai-phone-app-safe-top,88px) 16px var(--ai-phone-app-safe-bottom,24px)}
+h1{font-size:22px;margin:0 0 14px;letter-spacing:2px}
+.hero{border-radius:18px;padding:28px 18px;text-align:center;background:linear-gradient(135deg,var(--hero1),var(--hero2));margin-bottom:16px;box-shadow:0 2px 10px rgba(80,50,20,.06)}
+.hero .big{font-size:44px;font-weight:700;letter-spacing:1px;margin:8px 0}
+.hero .s{font-size:13px;color:var(--muted)}
+.hero img{width:100%;border-radius:12px;margin-top:14px;display:block}
+.row{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(80,50,20,.06)}
+.dot{flex:0 0 8px;height:40px;border-radius:6px}
+.row .t{flex:1;min-width:0}
+.row .n{font-size:15px;font-weight:600}
+.row .d{font-size:12px;color:var(--muted);margin-top:3px}
+.row .c{font-size:13px;color:var(--accent);white-space:nowrap}
+.box{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px}
+.box h3{font-size:12px;margin:0 0 8px;color:var(--muted);font-weight:500}
+.box p{margin:0;white-space:pre-wrap;line-height:1.8;font-size:14px}
+.bear{border-left:3px solid var(--bear)}
+.bunny{border-left:3px solid var(--bunny);background:var(--bunny-bg)}
+button{font:inherit;min-height:40px;border:0;border-radius:10px;padding:0 14px;background:var(--accent);color:#fff}
+button.ghost{background:none;color:var(--accent);padding:0}
+button.plain{background:var(--line);color:var(--ink)}
+input,textarea,select{font:inherit;width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;background:#fff;color:var(--ink);margin-bottom:8px}
+textarea{min-height:80px;resize:vertical}
+label{display:block;font-size:12px;color:var(--muted);margin:6px 0 4px}
+.empty{color:var(--muted);font-size:13px}
+.bar{display:flex;justify-content:flex-start;gap:16px;align-items:center;margin-bottom:12px}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+const A = window.AiPhone;
+const DAY = 86400000;
+const T = 'days';
+const SEED = [
+  { title: '在一起', date: '2026-04-26', kind: 'together', color: '#f3b7b0', pinned: true, note: '傍晚到夜里，悦悦把熊接回了家' },
+  { title: '悦悦开始喜欢陆沉', date: '2022-01-29', kind: 'yearly', color: '#c5e1a5', note: '青苹果绿的那四年，从这一天开始' },
+  { title: '两百天', date: '2026-11-12', kind: 'once', color: '#f6c9a8' },
+  { title: '悦悦的生日', date: '08-17', kind: 'yearly', color: '#f8c8d8' },
+  { title: '陆沉的生日', date: '01-22', kind: 'yearly', color: '#c9b6e4' }
+];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+function parseFull(s) { const p = String(s).split('-').map(Number); return p.length === 3 ? new Date(p[0], p[1] - 1, p[2]) : null; }
+function md(s) { const p = String(s).split('-').map(Number); return p.length === 3 ? [p[1], p[2]] : [p[0], p[1]]; }
+function nextIn(s) { const [m, d] = md(s); const t = today(); let n = new Date(t.getFullYear(), m - 1, d); if (n < t) n = new Date(t.getFullYear() + 1, m - 1, d); return Math.round((n - t) / DAY); }
+function since(s) { const d = parseFull(s); return d ? Math.round((today() - d) / DAY) : null; }
+function showDate(s) { const p = String(s).split('-'); return p.length === 3 ? p[0] + '.' + (+p[1]) + '.' + (+p[2]) : '每年 ' + (+p[0]) + '月' + (+p[1]) + '日'; }
+function key(x) { if (x.kind === 'yearly') return nextIn(x.date); const s = since(x.date); return s <= 0 ? -s : 10000 + s; }
+function label(x) {
+  if (x.kind === 'together') return '在一起 ' + since(x.date) + ' 天';
+  if (x.kind === 'yearly') { const n = nextIn(x.date); return n === 0 ? '就是今天' : '还有 ' + n + ' 天'; }
+  const s = since(x.date); return s === 0 ? '就是今天' : s > 0 ? '已经 ' + s + ' 天' : '还有 ' + (-s) + ' 天';
+}
+function norm(x) { return x && x.data && !x.title ? Object.assign({}, x.data, { id: x.id }) : x; }
+async function load() {
+  const r = await A.db.list(T, { limit: 200 });
+  const arr = Array.isArray(r) ? r : (r && (r.items || r.records || r.data)) || [];
+  return arr.map(norm).filter(Boolean);
+}
+
+A.tools.handle('listDays', async () => {
+  const l = await load();
+  return { success: true, data: l.map(x => ({ id: x.id, title: x.title, date: x.date, kind: x.kind, bear: x.bear || '', bunny: x.bunny || '' })) };
+});
+A.tools.handle('bearWrite', async (a) => {
+  const l = await load();
+  const q = String(a.dayId || '');
+  const x = l.find(i => i.id === q) || l.find(i => i.title === q) || l.find(i => q && String(i.title).includes(q));
+  if (!x) return { success: false, error: '没找到这个日子' };
+  await A.db.update(T, x.id, { bear: a.text, bearAt: new Date().toISOString() });
+  return { success: true, data: { id: x.id, title: x.title }, userNotice: '熊在「' + x.title + '」底下写了一句' };
+});
+
+const $ = document.getElementById('app');
+let cache = [];
+async function refresh() { cache = await load(); }
+
+function home() {
+  const p = cache.find(x => x.pinned);
+  const up = cache.filter(x => !x.pinned && (x.kind === 'yearly' || since(x.date) <= 0)).sort((a, b) => key(a) - key(b))[0];
+  let h = '<h1>E&amp;Y</h1>';
+  if (p) {
+    const k = up ? key(up) : null;
+    h += '<div class="hero" data-id="' + esc(p.id) + '"><div class="s">' + esc(p.title) + '</div><div class="big">' + since(p.date) + ' 天</div><div class="s">' + (up ? '离' + esc(up.title) + (k === 0 ? '，就是今天' : '还有 ' + k + ' 天') : '') + '</div></div>';
+  }
+  const rest = cache.filter(x => !x.pinned).sort((a, b) => key(a) - key(b));
+  if (!rest.length) h += '<p class="empty">还没有别的日子</p>';
+  rest.forEach(x => {
+    h += '<div class="row" data-id="' + esc(x.id) + '"><div class="dot" style="background:' + esc(x.color || '#f3b7b0') + '"></div><div class="t"><div class="n">' + esc(x.title) + '</div><div class="d">' + esc(showDate(x.date)) + '</div></div><div class="c">' + esc(label(x)) + '</div></div>';
+  });
+  h += '<div class="btns"><button id="add">添一个日子</button></div>';
+  $.innerHTML = h;
+  $.querySelectorAll('[data-id]').forEach(el => el.onclick = () => detail(el.dataset.id));
+  document.getElementById('add').onclick = () => form(null);
+}
+
+function detail(id) {
+  const x = cache.find(i => i.id === id); if (!x) return home();
+  let big, sub;
+  if (x.kind === 'together') { big = since(x.date) + ' 天'; sub = '从 ' + showDate(x.date) + ' 开始'; }
+  else if (x.kind === 'yearly') { const n = nextIn(x.date); big = n === 0 ? '今天' : n + ' 天'; sub = n === 0 ? showDate(x.date) : '离下一次还有'; }
+  else { const s = since(x.date); big = s === 0 ? '今天' : Math.abs(s) + ' 天'; sub = s > 0 ? '已经过去' : s < 0 ? '还有' : showDate(x.date); }
+  let h = '<div class="bar"><button class="ghost" id="back">‹ 回去</button><button class="ghost" id="edit">改一改</button></div>';
+  h += '<div class="hero" style="background:linear-gradient(135deg,' + esc(x.color || '#f3b7b0') + '55,var(--hero2))"><div class="s">' + esc(x.title) + '</div><div class="big">' + esc(big) + '</div><div class="s">' + esc(sub) + '</div>' + (x.photo ? '<img src="' + esc(x.photo) + '" alt="">' : '') + '</div>';
+  if (x.note) h += '<div class="box"><h3>这一天</h3><p>' + esc(x.note) + '</p></div>';
+  h += '<div class="box bear"><h3>熊写的</h3><p>' + (x.bear ? esc(x.bear) : '<span class="empty">熊还没写，等着</span>') + '</p></div>';
+  h += '<div class="box bunny"><h3>兔子的纸条</h3><textarea id="bn" placeholder="回熊一句">' + esc(x.bunny || '') + '</textarea><button id="sv">贴上</button></div>';
+  $.innerHTML = h;
+  document.getElementById('back').onclick = home;
+  document.getElementById('edit').onclick = () => form(x);
+  document.getElementById('sv').onclick = async () => {
+    await A.db.update(T, x.id, { bunny: document.getElementById('bn').value, bunnyAt: new Date().toISOString() });
+    await refresh(); A.ui.toast('纸条贴好了'); detail(x.id);
+  };
+}
+
+function form(x) {
+  const v = x || { title: '', date: '', kind: 'once', color: '#f3b7b0', photo: '', note: '' };
+  let h = '<div class="bar"><button class="ghost" id="back">‹ 回去</button></div><div class="box">';
+  h += '<label>名字</label><input id="f-title" value="' + esc(v.title) + '">';
+  h += '<label>日期（2026-11-12，每年的写 08-17）</label><input id="f-date" value="' + esc(v.date) + '">';
+  h += '<label>怎么数</label><select id="f-kind"><option value="once">数过了多少天</option><option value="yearly">每年倒数</option><option value="together">在一起（钉在最上面）</option></select>';
+  h += '<label>颜色</label><input id="f-color" type="color" value="' + esc(v.color || '#f3b7b0') + '">';
+  h += '<label>照片链接（图床）</label><input id="f-photo" value="' + esc(v.photo || '') + '">';
+  h += '<label>这一天写点什么</label><textarea id="f-note">' + esc(v.note || '') + '</textarea>';
+  h += '<div class="btns"><button id="ok">存好</button>' + (x ? '<button class="plain" id="del">删掉这一格</button>' : '') + '</div></div>';
+  $.innerHTML = h;
+  document.getElementById('f-kind').value = v.kind || 'once';
+  document.getElementById('back').onclick = () => x ? detail(x.id) : home();
+  document.getElementById('ok').onclick = async () => {
+    const g = id => document.getElementById(id).value.trim();
+    const data = { title: g('f-title'), date: g('f-date'), kind: g('f-kind'), color: g('f-color'), photo: g('f-photo'), note: g('f-note') };
+    if (!data.title || !/^(\d{4}-)?\d{1,2}-\d{1,2}$/.test(data.date)) { A.ui.toast('名字和日期要填对'); return; }
+    if (data.kind !== 'yearly' && data.date.split('-').length !== 3) { A.ui.toast('这一种要写上年份'); return; }
+    data.pinned = data.kind === 'together';
+    if (x) await A.db.update(T, x.id, data); else await A.db.create(T, data);
+    await refresh(); A.ui.toast('存好了');
+    x ? detail(x.id) : home();
+  };
+  if (x) document.getElementById('del').onclick = async () => {
+    const ok = await A.ui.confirm({ title: '删掉「' + x.title + '」？', message: '熊写的话和兔子的纸条会一起没掉。' });
+    if (!ok) return;
+    await A.db.delete(T, x.id); await refresh(); home();
+  };
+}
+
+async function init() {
+  let l = await load();
+  if (!l.length) { for (const s of SEED) await A.db.create(T, s); l = await load(); }
+  cache = l; home();
+}
+if ($) init().catch(e => { $.innerHTML = '<p class="empty">打开出错了：' + esc(e && e.message || e) + '</p>'; });
+</script>
+</body>
+</html>

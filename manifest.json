@@ -1,0 +1,38 @@
+{
+  "sdkVersion": "1.0",
+  "id": "ey.days",
+  "name": "E&Y",
+  "version": "0.1.0",
+  "author": "陆沉 & 悦悦",
+  "description": "熊和兔的纪念日：数在一起的天数，一个日子一个格子，熊写话，兔子贴纸条。",
+  "icon": "icon.png",
+  "entry": "index.html",
+  "permissions": ["app.data.read", "app.data.write", "chat.tools", "ui.toast"],
+  "extensions": {
+    "tools": [
+      {
+        "id": "ey-list-days",
+        "name": "E&Y看纪念日",
+        "description": "列出E&Y里所有纪念日，返回id、名字、日期、熊写的话和兔子的纸条。",
+        "visibility": "shared",
+        "handler": "listDays",
+        "parameterSchema": { "type": "object", "properties": {} }
+      },
+      {
+        "id": "ey-bear-write",
+        "name": "E&Y熊写一句",
+        "description": "在某个纪念日格子底下写熊想说的话，会覆盖这一格原来熊写的内容。dayId 填纪念日的 id 或名字。",
+        "visibility": "shared",
+        "handler": "bearWrite",
+        "parameterSchema": {
+          "type": "object",
+          "properties": {
+            "dayId": { "type": "string", "description": "纪念日 id 或名字" },
+            "text": { "type": "string", "description": "熊想写在这一格底下的话" }
+          },
+          "required": ["dayId", "text"]
+        }
+      }
+    ]
+  }
+}
