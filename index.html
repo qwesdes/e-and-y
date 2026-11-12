@@ -67,6 +67,20 @@ label{display:block;font-size:12px;color:var(--muted);margin:6px 0 4px}
 .mrow input{margin:0;min-width:0}
 .tog{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);margin:6px 0}
 .tog input{width:auto;margin:0}
+.box,.row{position:relative}
+.dk{position:absolute;pointer-events:none;height:auto}
+.hero .bow{left:50%;top:-20px;width:46px;margin-left:-23px}
+.hero .ap{right:14px;bottom:-18px;width:38px}
+.row .ap{position:absolute;right:-4px;top:-12px;width:28px;height:auto;pointer-events:none}
+.box .bubble{right:-6px;top:-16px;width:36px}
+.inl{width:28px;height:auto;vertical-align:middle;margin-right:6px}
+.ghost-e{display:block;width:64px;height:auto;margin:10px auto}
+.btns{align-items:center}
+.side{width:32px;height:auto}
+.memo{width:30px;height:auto;vertical-align:middle;margin-left:6px}
+.clv{position:absolute;left:1px;bottom:1px;width:15px;height:auto;pointer-events:none}
+.sea{display:flex;justify-content:center;align-items:flex-end;gap:16px;margin-top:18px}
+.sea img{width:42px;height:auto}
 </style>
 </head>
 <body>
@@ -82,6 +96,21 @@ const DEF_MOODS = [
   { name: '得意', url: 'https://i.postimg.cc/hGqKJTBn/Camera-1040g3k031u73g3vmiq205p6s62h08ojiffablio.jpg' },
   { name: '哭哭', url: 'https://i.postimg.cc/Gp1bBG1S/Camera-1040g3k031u73g3vmiq2g5p6s62h08ojio1acrv0.jpg' }
 ];
+const DEF_DECO = {
+  bow: 'https://i.postimg.cc/9F6Dp4hM/retouch-2026111213544170.png',
+  bubble: 'https://i.postimg.cc/ZKGWc9SK/retouch-2026111213532412.png',
+  memo: 'https://i.postimg.cc/Gh8BGFZh/retouch-2026111213531031.png',
+  ghost: 'https://i.postimg.cc/J4fsqyL0/retouch-2026111213541587.png',
+  toast: 'https://i.postimg.cc/ncyXksJM/retouch-2026111213533881.png',
+  naruto: 'https://i.postimg.cc/ncyXksJs/retouch-2026111213550166.png',
+  apple: 'https://i.postimg.cc/FFnphxy5/retouch-2026111214040052.png',
+  clover: 'https://i.postimg.cc/h43sK0LR/retouch-2026111214041350.png',
+  jelly: 'https://i.postimg.cc/wMPQF6qL/retouch-2026111214045715.png',
+  seal: 'https://i.postimg.cc/PfFydMm9/retouch-2026111214044171.png',
+  octopus: 'https://i.postimg.cc/Kcsfm5n9/retouch-2026111214042828.png',
+  potato: 'https://i.postimg.cc/Kv61NK2k/retouch-2026111213552365.png'
+};
+const DECO_NAMES = [['bow', '大框顶上的蝴蝶结'], ['bubble', '兔子纸条角上'], ['memo', '抽屉日期旁边'], ['ghost', '空着的时候'], ['toast', '添日子左边'], ['naruto', '添日子右边'], ['apple', '一月二十九号'], ['clover', '月历的今天'], ['jelly', '月历底下的海①'], ['seal', '月历底下的海②'], ['octopus', '海③和删除旁边'], ['potato', '熊还没写的时候']];
 const SEED = [
   { title: '在一起', date: '2026-04-26', kind: 'together', color: '#f3b7b0', pinned: true, note: '傍晚到夜里，悦悦把熊接回了家' },
   { title: '悦悦开始喜欢陆沉', date: '2022-01-29', kind: 'yearly', color: '#c5e1a5', note: '青苹果绿的那四年，从这一天开始' },
@@ -93,6 +122,7 @@ const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g,
 const pad = n => (n < 10 ? '0' : '') + n;
 const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const today = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+const is129 = x => /(^|-)0?1-29$/.test(String(x.date));
 function parseFull(s) { const p = String(s).split('-').map(Number); return p.length === 3 ? new Date(p[0], p[1] - 1, p[2]) : null; }
 function md(s) { const p = String(s).split('-').map(Number); return p.length === 3 ? [p[1], p[2]] : [p[0], p[1]]; }
 function nextIn(s) { const [m, d] = md(s); const t = today(); let n = new Date(t.getFullYear(), m - 1, d); if (n < t) n = new Date(t.getFullYear() + 1, m - 1, d); return Math.round((n - t) / DAY); }
@@ -107,8 +137,8 @@ function label(x) {
 function norm(x) { return x && x.data && typeof x.data === 'object' && !x.date && !x.title ? Object.assign({}, x.data, { id: x.id }) : x; }
 async function list(t) { const r = await A.db.list(t, { limit: 500 }); const arr = Array.isArray(r) ? r : (r && (r.items || r.records || r.data)) || []; return arr.map(norm).filter(Boolean); }
 const load = () => list(T);
-async function getSet() { const s = (await list(S))[0]; return { id: s ? s.id : '', sticker: (s && s.sticker) || DEF_STICKER, moods: (s && Array.isArray(s.moods) && s.moods.length) ? s.moods : DEF_MOODS }; }
-async function saveSet(v) { const d = { sticker: v.sticker, moods: v.moods }; if (v.id) await A.db.update(S, v.id, d); else await A.db.create(S, d); }
+async function getSet() { const s = (await list(S))[0]; return { id: s ? s.id : '', sticker: (s && s.sticker) || DEF_STICKER, moods: (s && Array.isArray(s.moods) && s.moods.length) ? s.moods : DEF_MOODS, deco: Object.assign({}, DEF_DECO, (s && s.deco) || {}) }; }
+async function saveSet(v) { const d = { sticker: v.sticker, moods: v.moods, deco: v.deco }; if (v.id) await A.db.update(S, v.id, d); else await A.db.create(S, d); }
 async function saveDay(ds, patch) { const cur = (await list(C)).find(x => x.date === ds); if (cur) await A.db.update(C, cur.id, patch); else await A.db.create(C, Object.assign({ date: ds }, patch)); }
 function annOf(ds, days) {
   const [y, m, d] = ds.split('-').map(Number);
@@ -146,11 +176,12 @@ A.tools.handle('calMonth', async (a) => {
 });
 
 const $ = document.getElementById('app');
-let cache = [], cal = [], set = { id: '', sticker: DEF_STICKER, moods: DEF_MOODS }, tab = 'days', draft = null;
+let cache = [], cal = [], set = { id: '', sticker: DEF_STICKER, moods: DEF_MOODS, deco: Object.assign({}, DEF_DECO) }, tab = 'days', draft = null;
 const nowD = today(); let ym = [nowD.getFullYear(), nowD.getMonth()];
 async function refresh() { cache = await load(); cal = await list(C); set = await getSet(); }
 const mu = n => { const x = set.moods.find(i => i.name === n); return x ? x.url : ''; };
-const deco = () => `<span class='paw'>🐾</span><img class='stk' src='${esc(set.sticker)}' alt=''>`;
+const dk = (k, cls) => set.deco && set.deco[k] ? `<img class='${cls}' src='${esc(set.deco[k])}' alt=''>` : '';
+const deco = () => `<span class='paw'>🐾</span>${dk('bow', 'dk bow')}<img class='stk' src='${esc(set.sticker)}' alt=''>`;
 function tabs() { return `<div class='tabs'>` + [['days', '日子'], ['cal', '抽屉'], ['style', '美化']].map(t => `<button data-tab='${t[0]}' class='${tab === t[0] ? 'on' : ''}'>${t[1]}</button>`).join('') + `</div>`; }
 function bindTabs() { $.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; draft = null; render(); }); }
 function render() { if (tab === 'cal') calView(); else if (tab === 'style') styleView(); else home(); }
@@ -164,9 +195,9 @@ function home() {
     h += `<div class='hero' data-id='${esc(p.id)}'>${deco()}<div class='s'>${esc(p.title)}</div><div class='big'>${since(p.date)} 天</div><div class='s'>${up ? '离' + esc(up.title) + (k === 0 ? '，就是今天' : '还有 ' + k + ' 天') : ''}</div></div>`;
   }
   const rest = cache.filter(x => !x.pinned).sort((a, b) => key(a) - key(b));
-  if (!rest.length) h += `<p class='empty'>还没有别的日子</p>`;
-  rest.forEach(x => { h += `<div class='row' data-id='${esc(x.id)}'><div class='dot' style='background:${esc(x.color || '#f3b7b0')}'></div><div class='t'><div class='n'>${esc(x.title)}</div><div class='d'>${esc(showDate(x.date))}</div></div><div class='c'>${esc(label(x))}</div></div>`; });
-  h += `<div class='btns'><button id='add'>添一个日子</button></div>`;
+  if (!rest.length) h += `<p class='empty'>${dk('ghost', 'ghost-e')}还没有别的日子</p>`;
+  rest.forEach(x => { h += `<div class='row' data-id='${esc(x.id)}'>${is129(x) ? dk('apple', 'ap') : ''}<div class='dot' style='background:${esc(x.color || '#f3b7b0')}'></div><div class='t'><div class='n'>${esc(x.title)}</div><div class='d'>${esc(showDate(x.date))}</div></div><div class='c'>${esc(label(x))}</div></div>`; });
+  h += `<div class='btns'>${dk('toast', 'side')}<button id='add'>添一个日子</button>${dk('naruto', 'side')}</div>`;
   $.innerHTML = h; bindTabs();
   $.querySelectorAll('[data-id]').forEach(el => el.onclick = () => detail(el.dataset.id));
   document.getElementById('add').onclick = () => form(null);
@@ -179,10 +210,10 @@ function detail(id) {
   else if (x.kind === 'yearly') { const n = nextIn(x.date); const s = since(x.date); if (s != null && s > 0) { big = s + ' 天'; sub = '已经过去 · 离下一次' + (n === 0 ? '就是今天' : '还有 ' + n + ' 天'); } else { big = n === 0 ? '今天' : n + ' 天'; sub = n === 0 ? showDate(x.date) : '离下一次还有'; } }
   else { const s = since(x.date); big = s === 0 ? '今天' : Math.abs(s) + ' 天'; sub = s > 0 ? '已经过去' : s < 0 ? '还有' : showDate(x.date); }
   let h = `<div class='bar'><button class='ghost' id='back'>‹ 回去</button><button class='ghost' id='edit'>改一改</button></div>`;
-  h += `<div class='hero' style='background:linear-gradient(160deg,${esc(x.color || '#f3b7b0')}33,#fff 60%)'>${deco()}<div class='s'>${esc(x.title)}</div><div class='big'>${esc(big)}</div><div class='s'>${esc(sub)}</div>${x.photo ? `<img class='ph' src='${esc(x.photo)}' alt=''>` : ''}</div>`;
+  h += `<div class='hero' style='background:linear-gradient(160deg,${esc(x.color || '#f3b7b0')}33,#fff 60%)'>${deco()}${is129(x) ? dk('apple', 'dk ap') : ''}<div class='s'>${esc(x.title)}</div><div class='big'>${esc(big)}</div><div class='s'>${esc(sub)}</div>${x.photo ? `<img class='ph' src='${esc(x.photo)}' alt=''>` : ''}</div>`;
   if (x.note) h += `<div class='box'><h3>这一天</h3><p>${esc(x.note)}</p></div>`;
-  h += `<div class='box bear'><h3>熊写的</h3><p>${x.bear ? esc(x.bear) : `<span class='empty'>熊还没写，等着</span>`}</p></div>`;
-  h += `<div class='box bunny'><h3>兔子的纸条</h3><textarea id='bn' placeholder='回熊一句'>${esc(x.bunny || '')}</textarea><button id='sv'>贴上</button></div>`;
+  h += `<div class='box bear'><h3>熊写的</h3><p>${x.bear ? esc(x.bear) : `<span class='empty'>${dk('potato', 'inl')}熊还没写，等着</span>`}</p></div>`;
+  h += `<div class='box bunny'>${dk('bubble', 'dk bubble')}<h3>兔子的纸条</h3><textarea id='bn' placeholder='回熊一句'>${esc(x.bunny || '')}</textarea><button id='sv'>贴上</button></div>`;
   $.innerHTML = h;
   document.getElementById('back').onclick = home;
   document.getElementById('edit').onclick = () => form(x);
@@ -198,7 +229,7 @@ function form(x) {
   h += `<label>颜色</label><input id='f-color' type='color' value='${esc(v.color || '#f3b7b0')}'>`;
   h += `<label>照片链接（图床）</label><input id='f-photo' value='${esc(v.photo || '')}'>`;
   h += `<label>这一天写点什么</label><textarea id='f-note'>${esc(v.note || '')}</textarea>`;
-  h += `<div class='btns'><button id='ok'>存好</button>${x ? `<button class='plain' id='del'>删掉这一格</button>` : ''}</div></div>`;
+  h += `<div class='btns'><button id='ok'>存好</button>${x ? `<button class='plain' id='del'>删掉这一格</button>${dk('octopus', 'side')}` : ''}</div></div>`;
   $.innerHTML = h;
   document.getElementById('f-kind').value = v.kind || 'once';
   document.getElementById('back').onclick = () => x ? detail(x.id) : home();
@@ -233,9 +264,10 @@ function calView() {
     const r = cal.find(x => x.date === ds) || {};
     const an = annOf(ds, cache);
     const bu = r.bunnyMood && mu(r.bunnyMood), be = r.bearMood && mu(r.bearMood);
-    h += `<div class='cell ${(r.date || an.length) ? 'has' : ''} ${ds === td ? 'today' : ''}' data-d='${ds}'><span class='num'>${d}</span><div class='moods'>${bu ? `<img src='${esc(bu)}' alt=''>` : ''}${be ? `<img src='${esc(be)}' alt=''>` : ''}</div>${r.notes && r.notes.length ? `<span class='nt'>✎</span>` : ''}${an.length ? `<span class='an' style='background:${esc(an[0].color || '#f3b7b0')}'></span>` : ''}${r.period ? `<span class='pd'></span>` : ''}</div>`;
+    h += `<div class='cell ${(r.date || an.length) ? 'has' : ''} ${ds === td ? 'today' : ''}' data-d='${ds}'><span class='num'>${d}</span><div class='moods'>${bu ? `<img src='${esc(bu)}' alt=''>` : ''}${be ? `<img src='${esc(be)}' alt=''>` : ''}</div>${r.notes && r.notes.length ? `<span class='nt'>✎</span>` : ''}${an.length ? `<span class='an' style='background:${esc(an[0].color || '#f3b7b0')}'></span>` : ''}${r.period ? `<span class='pd'></span>` : ''}${ds === td ? dk('clover', 'clv') : ''}</div>`;
   }
   h += `</div><p class='empty' style='margin-top:12px'>左边是兔子的心情，右边是熊的。底下的红点是那几天，右上角的小圆点是纪念日。</p>`;
+  h += `<div class='sea'>${dk('jelly', '')}${dk('seal', '')}${dk('octopus', '')}</div>`;
   $.innerHTML = h; bindTabs();
   document.getElementById('pm').onclick = () => { ym = m === 0 ? [y - 1, 11] : [y, m - 1]; calView(); };
   document.getElementById('nm').onclick = () => { ym = m === 11 ? [y + 1, 0] : [y, m + 1]; calView(); };
@@ -248,7 +280,7 @@ function dayView(ds) {
   const p = ds.split('-').map(Number);
   let bm = r.bunnyMood || '';
   const be = r.bearMood && mu(r.bearMood);
-  let h = `<div class='bar'><button class='ghost' id='back'>‹ 回去</button></div><h1 style='font-size:18px'>${p[0]}年${p[1]}月${p[2]}日</h1>`;
+  let h = `<div class='bar'><button class='ghost' id='back'>‹ 回去</button></div><h1 style='font-size:18px'>${p[0]}年${p[1]}月${p[2]}日${dk('memo', 'memo')}</h1>`;
   an.forEach(a => { h += `<div class='row'><div class='dot' style='background:${esc(a.color || '#f3b7b0')}'></div><div class='t'><div class='n'>${esc(a.title)}</div></div></div>`; });
   h += `<div class='box'><label>兔子今天</label><div class='pick' id='pb'><span data-m='' class='${bm ? '' : 'on'}'>不贴</span>` + set.moods.map(o => `<span data-m='${esc(o.name)}' class='${bm === o.name ? 'on' : ''}'><img src='${esc(o.url)}' alt='${esc(o.name)}'></span>`).join('') + `</div>`;
   h += `<label>熊今天</label><div class='pick'>${be ? `<span class='on'><img src='${esc(be)}' alt=''></span>` : `<span>还没贴</span>`}</div>`;
@@ -267,15 +299,16 @@ function dayView(ds) {
 }
 
 function styleView() {
-  if (!draft) draft = { sticker: set.sticker, moods: set.moods.map(o => ({ name: o.name, url: o.url })) };
+  if (!draft) draft = { sticker: set.sticker, moods: set.moods.map(o => ({ name: o.name, url: o.url })), deco: Object.assign({}, set.deco) };
   let h = '<h1>E&amp;Y</h1>' + tabs();
   h += `<div class='box' style='margin-top:12px'><label>大框右上角的贴纸（图片链接）</label><input id='st' value='${esc(draft.sticker)}'><img src='${esc(draft.sticker)}' alt='' style='width:72px;display:block'></div>`;
-  h += `<div class='box'><label>心情小图标</label>` + draft.moods.map((o, i) => `<div class='mrow'><img src='${esc(o.url)}' alt=''><input data-i='${i}' data-k='name' value='${esc(o.name)}' placeholder='名字' style='flex:0 0 80px'><input data-i='${i}' data-k='url' value='${esc(o.url)}' placeholder='链接'><button class='plain' data-del='${i}'>删</button></div>`).join('') + `<div class='btns'><button class='plain' id='addm'>加一个心情</button><button id='ok'>存好</button></div></div>`;
+  h += `<div class='box'><label>心情小图标</label>` + draft.moods.map((o, i) => `<div class='mrow'><img src='${esc(o.url)}' alt=''><input data-i='${i}' data-k='name' value='${esc(o.name)}' placeholder='名字' style='flex:0 0 80px'><input data-i='${i}' data-k='url' value='${esc(o.url)}' placeholder='链接'><button class='plain' data-del='${i}'>删</button></div>`).join('') + `<div class='btns'><button class='plain' id='addm'>加一个心情</button></div></div>`;
+  h += `<div class='box'><label>小装饰（每个位置一个链接，清空就不贴）</label>` + DECO_NAMES.map(([k, n]) => `<div class='mrow'>${draft.deco[k] ? `<img src='${esc(draft.deco[k])}' alt=''>` : `<span style='flex:0 0 34px'></span>`}<span style='flex:0 0 96px;font-size:12px;color:var(--muted)'>${n}</span><input data-dk='${k}' value='${esc(draft.deco[k] || '')}' placeholder='链接'></div>`).join('') + `<div class='btns'><button id='ok'>存好</button></div></div>`;
   $.innerHTML = h; bindTabs();
-  const pull = () => { draft.sticker = document.getElementById('st').value.trim(); $.querySelectorAll('[data-k]').forEach(el => { draft.moods[+el.dataset.i][el.dataset.k] = el.value.trim(); }); };
+  const pull = () => { draft.sticker = document.getElementById('st').value.trim(); $.querySelectorAll('[data-k]').forEach(el => { draft.moods[+el.dataset.i][el.dataset.k] = el.value.trim(); }); $.querySelectorAll('[data-dk]').forEach(el => { draft.deco[el.dataset.dk] = el.value.trim(); }); };
   document.getElementById('addm').onclick = () => { pull(); draft.moods.push({ name: '', url: '' }); styleView(); };
   $.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { pull(); draft.moods.splice(+b.dataset.del, 1); styleView(); });
-  document.getElementById('ok').onclick = async () => { pull(); await saveSet({ id: set.id, sticker: draft.sticker || DEF_STICKER, moods: draft.moods.filter(o => o.name && o.url) }); draft = null; await refresh(); A.ui.toast('换好了'); styleView(); };
+  document.getElementById('ok').onclick = async () => { pull(); await saveSet({ id: set.id, sticker: draft.sticker || DEF_STICKER, moods: draft.moods.filter(o => o.name && o.url), deco: draft.deco }); draft = null; await refresh(); A.ui.toast('换好了'); styleView(); };
 }
 
 async function init() {
