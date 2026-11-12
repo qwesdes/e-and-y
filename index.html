@@ -191,6 +191,7 @@ let cache = [], cal = [], set = { id: '', sticker: DEF_STICKER, moods: DEF_MOODS
 const nowD = today(); let ym = [nowD.getFullYear(), nowD.getMonth()];
 async function refresh() { cache = await load(); cal = await list(C); set = await getSet(); }
 const mu = n => { const x = set.moods.find(i => i.name === n); return x ? x.url : ''; };
+const mub = n => { const x = set.moods.find(i => i.name === n); return x ? (x.bunnyUrl || x.url) : ''; };
 const dk = (k, cls) => set.deco && set.deco[k] ? `<img class='${cls}' src='${esc(set.deco[k])}' alt=''>` : '';
 const deco = () => `${dk('clip', 'dk clip')}${dk('paw', 'dk pw')}${dk('bow', 'dk bow')}<img class='stk' src='${esc(set.sticker)}' alt=''>`;
 function tabs() { return `<div class='tabs'>` + [['days', '日子'], ['cal', '抽屉'], ['style', '美化']].map(t => `<button data-tab='${t[0]}' class='${tab === t[0] ? 'on' : ''}'>${t[1]}</button>`).join('') + `</div>`; }
