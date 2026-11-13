@@ -251,7 +251,7 @@ function detail(id) {
   $.innerHTML = h;
   document.getElementById('back').onclick = home;
   document.getElementById('edit').onclick = () => form(x);
-  document.getElementById('sv').onclick = async () => { await A.db.update(T, x.id, { bunny: document.getElementById('bn').value, bunnyAt: new Date().toISOString() }); await refresh(); A.ui.toast('纸条贴好了'); detail(x.id); };
+  document.getElementById('sv').onclick = async () => { await A.db.update(T, x.id, { bunny: document.getElementById('bn').value, bunnyAt: new Date().toISOString(), bunnyNew: true }); await refresh(); A.ui.toast('纸条贴好了'); detail(x.id); };
 }
 
 function form(x) {
