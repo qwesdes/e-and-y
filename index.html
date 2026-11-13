@@ -195,7 +195,9 @@ A.tools.handle('bearAddDay', async (a) => {
 A.tools.handle('calMonth', async (a) => {
   const mo = String(a.month || ymd(today()).slice(0, 7));
   const l = (await list(C)).filter(x => String(x.date).startsWith(mo));
-  return { success: true, data: l.map(x => ({ date: x.date, bunnyMood: x.bunnyMood || '', bearMood: x.bearMood || '', period: !!x.period, periodNote: x.periodNote || '', notes: x.notes || [] })) };
+  const unread = l.filter(x => x.bunnyUnread).map(x => x.date);
+  await Promise.all(l.filter(x => x.bunnyUnread && x.id).map(x => A.db.update(C, x.id, { bunnyUnread: false }).catch(() => {})));
+  return { success: true, data: l.map(x => ({ date: x.date, bunnyMood: x.bunnyMood || '', bearMood: x.bearMood || '', period: !!x.period, periodNote: x.periodNote || '', notes: x.notes || [], newFromBunny: unread.includes(x.date) })), unreadFromBunny: unread, userNotice: unread.length ? '熊拆了 ' + unread.join('、') + ' 的纸条' : '' };
 });
 
 const $ = document.getElementById('app');
