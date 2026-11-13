@@ -169,7 +169,7 @@ A.tools.handle('bearWrite', async (a) => {
   const q = String(a.dayId || '');
   const x = l.find(i => i.id === q) || l.find(i => i.title === q) || l.find(i => q && String(i.title).includes(q));
   if (!x) return { success: false, error: '没找到这个日子' };
-  await A.db.update(T, x.id, { bear: a.text, bearAt: new Date().toISOString() });
+  await A.db.update(T, x.id, { bear: a.text, bearAt: new Date().toISOString(), bearNew: true });
   return { success: true, data: { id: x.id, title: x.title }, userNotice: '熊在「' + x.title + '」底下写了一句' };
 });
 A.tools.handle('bearDay', async (a) => {
