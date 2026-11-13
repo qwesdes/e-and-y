@@ -160,7 +160,9 @@ function annOf(ds, days) {
 
 A.tools.handle('listDays', async () => {
   const l = await load();
-  return { success: true, data: l.map(x => ({ id: x.id, title: x.title, date: x.date, kind: x.kind, bear: x.bear || '', bunny: x.bunny || '' })) };
+  const fresh = l.filter(x => x.bunnyNew).map(x => x.title);
+  await Promise.all(l.filter(x => x.bunnyNew && x.id).map(x => A.db.update(T, x.id, { bunnyNew: false }).catch(() => {})));
+  return { success: true, data: l.map(x => ({ id: x.id, title: x.title, date: x.date, kind: x.kind, bear: x.bear || '', bunny: x.bunny || '', newFromBunny: !!x.bunnyNew })), unreadFromBunny: fresh, userNotice: fresh.length ? '熊拆了「' + fresh.join('」「') + '」的纸条' : '' };
 });
 A.tools.handle('bearWrite', async (a) => {
   const l = await load();
