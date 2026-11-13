@@ -210,7 +210,15 @@ const dk = (k, cls) => set.deco && set.deco[k] ? `<img class='${cls}' src='${esc
 const deco = () => `${dk('clip', 'dk clip')}${dk('paw', 'dk pw')}${dk('bow', 'dk bow')}<img class='stk' src='${esc(set.sticker)}' alt=''>`;
 function tabs() { const un = cal.some(x => x.bearUnread); return `<div class='tabs'>` + [['days', '日子'], ['cal', '抽屉'], ['style', '美化']].map(t => `<button data-tab='${t[0]}' class='${tab === t[0] ? 'on' : ''}' style='position:relative'>${t[1]}${t[0] === 'cal' && un ? (set.deco && set.deco.bang ? `<img src='${esc(set.deco.bang)}' alt='' style='position:absolute;right:-4px;top:-8px;width:10px;height:auto;pointer-events:none'>` : `<span style='position:absolute;right:-2px;top:-2px;width:9px;height:9px;border-radius:50%;background:#e2574c;box-shadow:0 0 0 2px #fff'></span>`) : ''}</button>`).join('') + `</div>`; }
 function bindTabs() { $.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; draft = null; render(); }); }
-function render() { if (tab === 'cal') calView(); else if (tab === 'style') styleView(); else home(); }
+function render() { if (tab === 'cal') calView(); else if (tab === 'style') styleView(); else if (tab === 'album') albumView(); else home(); }
+function albumView() {
+  const ps = cache.filter(x => x.photo).sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  let h = '<h1>E&amp;Y</h1>' + tabs();
+  if (!ps.length) h += `<div class='box' style='margin-top:12px;text-align:center;color:var(--muted)'>还没有照片，去日子里贴一张</div>`;
+  else h += `<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px'>` + ps.map(x => `<div data-ph='${esc(x.id)}' style='background:#fff;border:1.5px solid #f4b8b2;border-radius:10px;padding:4px 4px 6px'><img src='${esc(x.photo)}' alt='' style='width:100%;aspect-ratio:1;object-fit:cover;border-radius:7px;display:block'><div style='font-size:11px;color:var(--muted);margin-top:4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'>${esc(x.title)}</div></div>`).join('') + `</div>`;
+  $.innerHTML = h; bindTabs();
+  $.querySelectorAll('[data-ph]').forEach(el => el.onclick = () => detail(el.dataset.ph));
+}
 
 function home() {
   const p = cache.find(x => x.pinned);
