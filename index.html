@@ -249,7 +249,7 @@ function form(x) {
   h += `<label>颜色</label><input id='f-color' type='color' value='${esc(v.color || '#f3b7b0')}'>`;
   h += `<label>照片链接（图床）</label><input id='f-photo' value='${esc(v.photo || '')}'>`;
   h += `<label>这一天写点什么</label><textarea id='f-note'>${esc(v.note || '')}</textarea>`;
-  h += `<div class='btns'><button id='ok'>存好</button>${x ? `<button class='plain' id='del'>删掉这一格</button>${dk('octopus', 'side')}` : ''}</div></div>`;
+  h += `<div class='btns'><button id='ok'>存好</button>${x ? `<button class='plain' id='del'>删掉这一格</button>` : ''}</div>${dk('octopus', 'dk f-oc')}${dk('jelly', 'dk f-je')}${dk('seal', 'dk f-se')}${dk('ghost', 'dk f-gh')}</div>`;
   $.innerHTML = h;
   document.getElementById('f-kind').value = v.kind || 'once';
   document.getElementById('back').onclick = () => x ? detail(x.id) : home();
